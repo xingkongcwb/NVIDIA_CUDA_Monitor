@@ -56,11 +56,15 @@ class  MainWindow :
         self.top2.pack(padx=15,pady=15)
         
         # 初始化数据
+        # command = ['nvidia-smi']
+        # out_put = subprocess.run(command,capture_output=True)
+        # result= f'{out_put.stdout}'
+        # match_0 = re.findall(' *([0-9]{1,3})% *', result)
+        
+        
+        match_0 , match_1 , match_2 , match_3 = GetInfo()
+        self.gpu_mem_size = max(  [ max(int(v[0]) , int(v[1])) for v in match_1 ] ) 
         # GPU个数
-        command = ['nvidia-smi']
-        out_put = subprocess.run(command,capture_output=True)
-        result= f'{out_put.stdout}'
-        match_0 = re.findall(' *([0-9]{1,3})% *', result)
         self.gpu_count = len(match_0)        
         # print(f'{self.gpu_count = }')
         
@@ -74,6 +78,8 @@ class  MainWindow :
             self.GPU_Temp.append([0 for v in range(300)])
             self.GPU_Power.append([0 for v in range(300)])
         
+        
+        
         style.use('classic') 
         
         self.figure = Figure(figsize=(8 , 6), dpi=100)
@@ -86,8 +92,8 @@ class  MainWindow :
         
         self.subplot_1 = self.figure.add_subplot(4, 1, 2)
         self.subplot_1.set_title('GPU_Mem')
-        self.subplot_1.set_ylim([0 , 16280  // 1024])
-        self.subplot_1.set_yticks([v for v in range(0 , 16280  // 1024, 16280  // 1024 // 5)])
+        self.subplot_1.set_ylim([0 , self.gpu_mem_size  // 1024])
+        self.subplot_1.set_yticks([v for v in range(0 , self.gpu_mem_size  // 1024, self.gpu_mem_size  // 1024 // 5)])
         self.subplot_1.grid()
         
         self.subplot_2 = self.figure.add_subplot(4, 1, 3)
@@ -142,8 +148,8 @@ class  MainWindow :
             self.subplot_1.plot(self.GPU_Mem[i] , label = f'GPU:{i}')
             self.subplot_1.legend(loc='lower left',fontsize='small')
             self.subplot_1.set_title('GPU_Mem')
-            self.subplot_1.set_ylim([0 , 16280  // 1024])
-            self.subplot_1.set_yticks([v for v in range(0 , 16280  // 1024, 16280  // 1024 // 5)])
+            self.subplot_1.set_ylim([0 , self.gpu_mem_size  // 1024])
+            self.subplot_1.set_yticks([v for v in range(0 , self.gpu_mem_size  // 1024, self.gpu_mem_size  // 1024 // 5)])
             self.subplot_1.grid()
             # plt.subplot(4, 1, 2)
             # plt.plot(self.GPU_Mem[i] , label = f'GPU:{i}')
